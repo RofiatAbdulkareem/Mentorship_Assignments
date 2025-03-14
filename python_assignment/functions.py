@@ -113,3 +113,25 @@ def check_code(names):
     return f"{invalid_name}: This name contains a number or invalid characters, kindly check and rectify."
 
 print(check_code(names))
+
+# Task 5: Checking for non-string data using yield
+data = [4, "eze", "alonzo", 5]
+
+def bad_data_checker(names):
+    """
+    Generator function to identify non-string elements in a given list.
+
+    Args:
+        names (list): A list containing mixed data types.
+
+    Yields:
+        Any: Elements from the list that are not of type `str`.
+    """
+    for name in names:
+        if not isinstance(name, str):  
+            yield name 
+
+x = bad_data_checker(data)
+
+for i in x:
+    print(i)
