@@ -103,16 +103,20 @@ response = {'apiVersion': '2.0',
    'annualSalaryMin': 132000,
    'annualSalaryMax': 181500,
    'salaryCurrency': 'USD'}]}
-
+# checking the keys present in the response dictionary
 response.keys()
+
+# getting the keys in jobs
 rofee = response['jobs']
 rofee
 
+# extracting job titles as a dictionary
 job_titles = []
 for job in rofee:
     job_titles.append(job['jobTitle'])
 print(job_titles) 
 
+# extracting job titles with manager and senior in them
 senior_role = []
 manager_role = []
 
@@ -124,6 +128,7 @@ for role in rofee:
 
 print(f"senior_role: {senior_role}")
 print(f"manager_role: {manager_role}")
+
 
 """
 TASK 2: Extract Competition Names
@@ -139,10 +144,13 @@ response_2.status_code
 data = response_2.json()
 data
 
+# checking the keys
 data.keys()
 
+# extracting competitions from the response
 comp = data["competitions"]
 
+# extracting competition names as a list
 competition_names = []
 for item in comp:
     x = item["name"]
@@ -168,12 +176,14 @@ response_3 = requests.get(url_3)
 
 data_3 = response_3.json()
 data_3
-
+# printing keys 
 data_3.keys()
 
+# assigning results dictionary to profiles
 profiles = data_3["results"]
 profiles
 
+# extracting male and female profiles into separate lists
 male_profiles = []
 female_profiles = []
 
@@ -192,6 +202,7 @@ Extract only the 'date' values from the 'dob' field into a list.
 Expected Output: A list containing DOB dates.
 """
 
+# extracting date of birth (dob) from each profile into a list
 extracted_date = []
 for profile in profiles:
     extracted_date.append(profile['dob']['date'])
@@ -203,7 +214,10 @@ Concatenate the first name and last name for each male profile into a list.
 Expected Output: A list containing full names of male profiles.
 """
 
+# assigning the male profile from above to x 
 x = male_profiles
+
+# extracting full name (first name and last name) for each male profile into a list
 male_full_name = []
 
 for profile in x:
@@ -216,7 +230,11 @@ TASK 3 (c)(ii): Extract Female Full Names
 Concatenate the first name and last name for each female profile into a list.
 Expected Output: A list containing full names of female profiles."""
 
+# assigning the female profile from above to y
 y = female_profiles
+
+
+# extracting full name (first name and last name) for each female profile into a list
 female_full_name = []
 
 for profile in y:
