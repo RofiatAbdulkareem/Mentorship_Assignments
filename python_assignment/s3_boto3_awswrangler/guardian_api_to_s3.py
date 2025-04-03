@@ -38,14 +38,14 @@ def guardian(url):
 
 df = guardian(url)
 
-# Create a boto3 session using AWS credentials from environment variables
+# Create a boto3 session using AWS credentials from .env
 session = boto3.Session(
     aws_access_key_id=os.getenv('ACCESS_KEY'),
     aws_secret_access_key=os.getenv('SECRET_KEY'),
     region_name='eu-central-1'
 )
 
-# Save DataFrame as a Parquet file in an S3 bucket
+# Save DataFrame as a Parquet file in my S3 bucket
 wr.s3.to_parquet(
     df=df,
     path='s3://rofiat-bucket/football_data',

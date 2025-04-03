@@ -113,7 +113,7 @@ session = boto3.Session(
     region_name='eu-central-1'
 )
 
-# Save DataFrame as a Parquet file in an S3 bucket
+# Save DataFrame as a Parquet file in my S3 bucket
 wr.s3.to_parquet(
     df=df, 
     path="s3://rofiat-bucket/job_response.parquet",  

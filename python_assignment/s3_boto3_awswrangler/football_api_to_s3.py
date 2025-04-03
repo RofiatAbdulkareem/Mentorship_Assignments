@@ -8,7 +8,7 @@ import dotenv
 import os
 from dotenv import load_dotenv
 
-# Load environment variables from a .env file
+# Load environment variables from .env file
 load_dotenv()
 
 # Define the API endpoint URL for retrieving football competition data
@@ -29,14 +29,14 @@ df = pandas.json_normalize(x)
 
 df 
 
-# Create a boto3 session using credentials stored in environment variables
+# Create a boto3 session using credentials stored in .env
 session = boto3.Session(
     aws_access_key_id=os.getenv('ACCESS_KEY'),
     aws_secret_access_key=os.getenv('SECRET_KEY'),
     region_name='eu-central-1'
 )
 
-# Save the DataFrame as a Parquet file in an S3 bucket using awswrangler
+# Save the DataFrame as a Parquet file in my S3 bucket using awswrangler
 wr.s3.to_parquet(
     df=df,  
     path="s3://rofiat-bucket/football_data.parquet", 
