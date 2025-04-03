@@ -1,11 +1,12 @@
-import pandas
+import pandas as pd
 import boto3
-import awswrangler
+import awswrangler as wr
 import json
 import os
 import dotenv
 from dotenv import load_dotenv
 
+# Load environment variables from .env file
 load_dotenv()
 
 
@@ -101,19 +102,22 @@ response = {'apiVersion': '2.0',
    'annualSalaryMin': 132000,
    'annualSalaryMax': 181500,
    'salaryCurrency': 'USD'}]}
-import pandas as pd
+
+# Normalize the 'jobs' JSON data into a DataFrame
 df = pd.json_normalize(response['jobs'])
-df
+
+# Create a boto3 session using AWS credentials from environment variables
 session = boto3.Session(
     aws_access_key_id=os.getenv('ACCESS_KEY'),
     aws_secret_access_key=os.getenv('SECRET_KEY'),
     region_name='eu-central-1'
 )
 
-awswrangler.s3.to_parquet (
-    df= df, 
-    path = "s3://rofiat-bucket/job_response.parquet", 
-    dataset = False,
-    #mode = 'append',
+# Save DataFrame as a Parquet file in an S3 bucket
+wr.s3.to_parquet(
+    df=df, 
+    path="s3://rofiat-bucket/job_response.parquet",  
+    dataset=False,  
+    # mode='append',
     boto3_session=session
-    )
+)
