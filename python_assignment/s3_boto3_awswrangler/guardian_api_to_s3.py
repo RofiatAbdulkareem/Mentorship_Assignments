@@ -36,6 +36,8 @@ def guardian(url):
     else:
         print("Error: Unable to fetch data from the API")
 
+df = guardian(url)
+
 # Create a boto3 session using AWS credentials from environment variables
 session = boto3.Session(
     aws_access_key_id=os.getenv('ACCESS_KEY'),
