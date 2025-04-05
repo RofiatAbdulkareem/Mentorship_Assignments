@@ -1,10 +1,9 @@
-import requests
-import json
-import pandas as pd
-import boto3
-import awswrangler as wr
 import os
-import dotenv
+
+import awswrangler as wr
+import boto3
+import pandas as pd
+import requests
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -16,13 +15,14 @@ url = os.getenv('API_KEY')
 # Make a GET request to the API
 response = requests.get(url)
 
+
 def guardian(url):
     """
-    Fetches data from the given URL, extracts relevant JSON fields, 
+    Fetches data from the given URL, extracts relevant JSON fields,
     normalizes the data into a Pandas DataFrame, and returns the DataFrame.
 
     Parameters:
-        url (str): The API endpoint URL.
+        url (str): The API endpoint.
 
     Returns:
         pd.DataFrame: A DataFrame containing the normalized API response data.
@@ -35,6 +35,7 @@ def guardian(url):
         return df
     else:
         print("Error: Unable to fetch data from the API")
+
 
 df = guardian(url)
 

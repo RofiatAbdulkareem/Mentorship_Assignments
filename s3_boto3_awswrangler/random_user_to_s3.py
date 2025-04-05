@@ -1,10 +1,9 @@
+import os
+
+import awswrangler as wr
+import boto3
 import pandas
 import requests
-import json
-import boto3
-import awswrangler as wr
-import dotenv
-import os
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -25,7 +24,6 @@ x
 
 # Normalize JSON data into a structured DataFrame
 df = pandas.json_normalize(x)
-df 
 
 # Select specific columns
 df_y = df[['gender', 'email', 'phone', 'cell']]
@@ -40,7 +38,7 @@ session = boto3.Session(
 
 # Store the selected DataFrame in my S3 bucket in Parquet format
 wr.s3.to_parquet(
-    df=df_y, 
+    df=df_y,
     path="s3://rofiat-bucket/random_user_data.parquet",
     dataset=True,
     mode='append',

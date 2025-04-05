@@ -1,11 +1,10 @@
-#importing the necessary libraries
+# importing the necessary libraries
+import os
+
+import awswrangler as wr
+import boto3
 import pandas
 import requests
-import json
-import boto3
-import awswrangler as wr
-import dotenv
-import os
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -27,7 +26,7 @@ x = response.json()['competitions']
 # This flattens nested structures, making it easier to analyze
 df = pandas.json_normalize(x)
 
-df 
+df
 
 # Create a boto3 session using credentials stored in .env
 session = boto3.Session(
@@ -38,9 +37,9 @@ session = boto3.Session(
 
 # Save the DataFrame as a Parquet file in my S3 bucket using awswrangler
 wr.s3.to_parquet(
-    df=df,  
-    path="s3://rofiat-bucket/football_data.parquet", 
-    dataset=False,  
+    df=df,
+    path="s3://rofiat-bucket/football_data.parquet",
+    dataset=False,
     # mode='append',
     boto3_session=session
 )
