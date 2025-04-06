@@ -14,8 +14,8 @@ url = "http://api.football-data.org/v4/competitions/"
 response = requests.get(url)
 
 if response.status_code == 200:
-    x = response.json()['competitions']
-    df = pandas.json_normalize(x)
+    football_response = response.json()['competitions']
+    df = pandas.json_normalize(football_response)
 
 session = boto3.Session(
     aws_access_key_id=os.getenv('ACCESS_KEY'),

@@ -30,8 +30,8 @@ def guardian(url):
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
-        duh = data['response']['results']
-        df = pd.json_normalize(duh)
+        guardian_response = data['response']['results']
+        df = pd.json_normalize(guardian_response)
         return df
     else:
         print("Error: Unable to fetch data from the API")
