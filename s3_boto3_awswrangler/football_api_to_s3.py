@@ -23,10 +23,13 @@ session = boto3.Session(
     region_name='eu-central-1'
 )
 
-wr.s3.to_parquet(
-    df=df,
-    path="s3://rofiat-bucket/football_data.parquet",
-    dataset=False,
-    # mode='append',
-    boto3_session=session
-)
+
+def extract_football_data_to_s3():
+    wr.s3.to_parquet(
+                    df=df,
+                    path="s3://rofiat-bucket/football_data.parquet",
+                    dataset=False,
+                    # mode='append',
+                    boto3_session=session
+                    )
+    return "Data successfully written to s3"
