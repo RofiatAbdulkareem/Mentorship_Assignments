@@ -18,14 +18,14 @@ response = requests.get(url)
 
 def guardian(url):
     """
-    Fetches data from the given URL, extracts relevant JSON fields,
-    normalizes the data into a Pandas DataFrame, and returns the DataFrame.
+    Fetches data from the URL, extracts relevant fields,
+    normalizes the data into a DataFrame, and returns the DataFrame.
 
     Parameters:
         url (str): The API endpoint.
 
     Returns:
-        pd.DataFrame: A DataFrame containing the normalized API response data.
+        df: A DataFrame containing the response data.
     """
     response = requests.get(url)
     if response.status_code == 200:
@@ -39,14 +39,12 @@ def guardian(url):
 
 df = guardian(url)
 
-# Create a boto3 session using AWS credentials from .env
 session = boto3.Session(
     aws_access_key_id=os.getenv('ACCESS_KEY'),
     aws_secret_access_key=os.getenv('SECRET_KEY'),
     region_name='eu-central-1'
 )
 
-# Save DataFrame as a Parquet file in my S3 bucket
 wr.s3.to_parquet(
     df=df,
     path='s3://rofiat-bucket/football_data',
