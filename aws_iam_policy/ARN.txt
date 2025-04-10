@@ -1,8 +1,8 @@
 
 
 # QUESTION
-
 Please list the ARN format/pattern for the below list of AWS resources. Please note that the bold part is the service and the one at the front is the resource, for example S3 is the service and accesspoint is the resource
+
 S3 accesspoint: arn:${Partition}:s3:${Region}:${Account}:accesspoint/${AccessPointName}
 S3 bucket: arn:${Partition}:s3:::${BucketName}
 S3 storagelensgroup : arn:${Partition}:s3:${Region}:${Account}:storage-lens-group/${Name}
