@@ -1,14 +1,4 @@
 
-
-# QUESTION
-
-Create an IAM user and attach a custom policy that satisfy the below condition
-The user should only have access to see the list of files on any bucket name that has the word spark-job in s3. 
-Please you need to use pattern matching to match the buckets with the word spark-job
-However, The user should be able to delete any file in the bucket spark-job-data-input in the folder dumps except for the files that ends with csv.
-Please use pattern matching to exclude the csv.
-
-
 {
     "Version": "2012-10-17",
     "Statement": [
