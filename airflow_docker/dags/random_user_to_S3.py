@@ -4,8 +4,7 @@ import pandas
 import requests
 from airflow.models import Variable
 
-url = "https://randomuser.me/api/?results=10"
-response = requests.get(url)
+response = requests.get(Variable.get('url'))
 
 def random_user_to_s3():
     """ 

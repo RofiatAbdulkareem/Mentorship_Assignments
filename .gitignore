@@ -1,2 +1,4 @@
 cde_env
 .env
+*swp*
+logs/*

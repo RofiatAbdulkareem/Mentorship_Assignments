@@ -1,4 +1,4 @@
-Questions are 
+Questions for the Json files are:
 
 1. Create an IAM user and attach a custom policy that satisfy the below condition
 The user should only have access to see the list of files on any bucket name that has the word spark-job in s3. 
