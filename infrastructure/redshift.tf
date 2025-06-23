@@ -1,0 +1,166 @@
+resource "aws_vpc" "redshift_vpc" {
+  cidr_block = "10.1.0.0/16"
+}
+
+resource "aws_subnet" "rs_public_subnet_1" {
+  cidr_block        = "10.1.1.0/24"
+  availability_zone = "us-east-1a"
+  vpc_id            = aws_vpc.redshift_vpc.id
+
+  tags = {
+    Name    = "rs-public_subnet_1"
+    service = "Redshift"
+  }
+}
+
+resource "aws_subnet" "rs_public_subnet_2" {
+  cidr_block        = "10.1.2.0/24"
+  availability_zone = "us-east-1b"
+  vpc_id            = aws_vpc.redshift_vpc.id
+
+  tags = {
+    Name    = "rs_public_subnet_2"
+    service = "Redshift"
+  }
+}
+
+resource "aws_internet_gateway" "redshift-igw" {
+  vpc_id = aws_vpc.redshift_vpc.id
+
+  tags = {
+    Name = "redshift-igw"
+  }
+}
+
+resource "aws_route_table" "redshift_rt" {
+  vpc_id = aws_vpc.redshift_vpc.id
+
+  tags = {
+    Name = "redshift_rt"
+  }
+}
+
+resource "aws_route" "redshift_route" {
+  route_table_id         = aws_route_table.redshift_rt.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.redshift-igw.id
+}
+
+resource "aws_route_table_association" "public_subnet_1_association" {
+  subnet_id      = aws_subnet.rs_public_subnet_1.id
+  route_table_id = aws_route_table.redshift_rt.id
+}
+
+resource "aws_route_table_association" "public_subnet_2_association" {
+  subnet_id      = aws_subnet.rs_public_subnet_2.id
+  route_table_id = aws_route_table.redshift_rt.id
+}
+
+resource "aws_redshift_subnet_group" "rs_subnet_group" {
+  name       = "rs_subnet_group"
+  subnet_ids = [aws_subnet.rs_public_subnet.id, aws_subnet.rs_private_subnet.id]
+
+  tags = {
+    environment = "Production"
+    service     = "Redshift"
+  }
+}
+
+resource "aws_iam_role" "redshift_role" {
+  name = "redshift_role"
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "redshift.amazonaws.com"
+        }
+      },
+    ]
+  })
+
+  tags = {
+    tag-key = "tag-value"
+  }
+}
+
+resource "aws_iam_role_policy" "redshift_policy" {
+  name = "redshift_policy"
+  role = aws_iam_role.redshift_role.id
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListAllBuckets",
+          "redshift:*"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_redshift_cluster_iam_roles" "redshift_cluster_iam_roles" {
+  cluster_identifier = aws_redshift_cluster.redshift_cluster.cluster_identifier
+  iam_role_arns      = [aws_iam_role.redshift_role.arn]
+}
+
+resource "aws_redshift_cluster" "redshift_cluster" {
+  cluster_identifier  = "redshift-cluster"
+  database_name       = "DE-DB"
+  master_username     = "rofiat"
+  master_password     = aws_ssm_parameter.redshift_db_password.value
+  node_type           = "dc2.large"
+  cluster_type        = "multi-node"
+  iam_roles           = [aws_iam_role.redshift_role.arn]
+  number_of_nodes     = 3
+  publicly_accessible = true
+}
+
+resource "random_password" "password" {
+  length  = 8
+  special = false
+}
+
+resource "aws_ssm_parameter" "redshift_db_password" {
+  name  = "redshift_db_password"
+  type  = "String"
+  value = random_password.password.result
+}
+
+resource "aws_security_group" "redshift_SG" {
+  name        = "allow_traffic"
+  description = "Allow inbound traffic and outbound"
+  vpc_id      = aws_vpc.redshift_vpc.id
+
+  tags = {
+    Name = "redshift-SG"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "ingress_rule" {
+  security_group_id = aws_security_group.redshift_SG.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 5439
+  ip_protocol       = "tcp"
+  to_port           = 5439
+}
+
+resource "aws_vpc_security_group_egress_rule" "egress_rule" {
+  security_group_id = aws_security_group.redshift_SG.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1" # semantically equivalent to all ports,allow all types of ip-protocol
+}
