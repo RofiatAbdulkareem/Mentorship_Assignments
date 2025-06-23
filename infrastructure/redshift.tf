@@ -8,8 +8,7 @@ resource "aws_subnet" "rs_public_subnet_1" {
   vpc_id            = aws_vpc.redshift_vpc.id
 
   tags = {
-    Name    = "rs-public_subnet_1"
-    service = "Redshift"
+    Name = "rs-public_subnet_1"
   }
 }
 
@@ -19,8 +18,7 @@ resource "aws_subnet" "rs_public_subnet_2" {
   vpc_id            = aws_vpc.redshift_vpc.id
 
   tags = {
-    Name    = "rs_public_subnet_2"
-    service = "Redshift"
+    Name = "rs_public_subnet_2"
   }
 }
 
@@ -58,12 +56,7 @@ resource "aws_route_table_association" "public_subnet_2_association" {
 
 resource "aws_redshift_subnet_group" "rs_subnet_group" {
   name       = "rs_subnet_group"
-  subnet_ids = [aws_subnet.rs_public_subnet.id, aws_subnet.rs_private_subnet.id]
-
-  tags = {
-    environment = "Production"
-    service     = "Redshift"
-  }
+  subnet_ids = [aws_subnet.rs_public_subnet_1.id, aws_subnet.rs_public_subnet_2.id]
 }
 
 resource "aws_iam_role" "redshift_role" {
@@ -84,10 +77,6 @@ resource "aws_iam_role" "redshift_role" {
       },
     ]
   })
-
-  tags = {
-    tag-key = "tag-value"
-  }
 }
 
 resource "aws_iam_role_policy" "redshift_policy" {

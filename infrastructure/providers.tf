@@ -1,4 +1,12 @@
 provider "aws" {
+  default_tags {
+    tags = {
+      Environment = "Production"
+      Owner       = "DE-Team"
+      Project     = "Redshift"
+      Managed_by  = "Terraform"
+    }
+  }
   region = "us-east-1"
 }
 
